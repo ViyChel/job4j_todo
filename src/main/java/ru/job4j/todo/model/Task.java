@@ -1,5 +1,6 @@
 package ru.job4j.todo.model;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -10,7 +11,11 @@ import java.util.Objects;
  * @version 1.0
  * @since 22.12.2020
  */
+@Entity
+@Table(name = "items")
 public class Task {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String description;
     private Timestamp created;

@@ -20,6 +20,46 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 
+<div class="container pt-3">
+    <div class="row">
+        <div class="card" style="width: 75%">
+            <div class="card-header">
+                Добавить новое задание
+            </div>
+            <div class="card-body">
+                <form action="/item.do" method="post" accept-charset="UTF-8">
+                    <div class="form-group">
+                        <label>Описание</label>
+                        <input type="text" class="form-control" id="description" name="description" value="">
+                    </div>
+                    <button type="submit" class="btn btn-primary" onclick="return validate();">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container pt-3">
+    <div class="row">
+        <div class="card" style="width: 100%">
+            <div class="card-header">
+                Все задания
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Описание</th>
+                        <th scope="col">Дата создания</th>
+                        <th scope="col">Пользователь</th>
+                        <th scope="col">Отметка</th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

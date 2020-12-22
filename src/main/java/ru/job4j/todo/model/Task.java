@@ -18,10 +18,14 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String description;
-    private Timestamp created;
+    private Timestamp created = new Timestamp(System.currentTimeMillis());
     private boolean done;
 
     public Task() {
+    }
+
+    public Task(String description) {
+        this.description = description;
     }
 
     public Task(String description, Timestamp created, boolean done) {

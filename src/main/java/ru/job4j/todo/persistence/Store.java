@@ -18,7 +18,7 @@ public interface Store<T> {
 
     List<T> findAll();
 
-    List<T> findByName(String key);
+    List<T> findByName(String name);
 
     T findById(int id);
 }

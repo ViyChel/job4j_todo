@@ -19,15 +19,16 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="./scripts/script.js"></script>
+
 <div class="container">
     <div class="row justify-content-end">
-        <ul class="nav ">
+        <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="/reg.do">Регистрация</a>
+                <a class="nav-link" href="/todo/reg.do">Регистрация</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/auth.do">Войти</a>
-            </li>
+            <li class="nav-item" id="auth"></li>
         </ul>
     </div>
 </div>
@@ -38,14 +39,12 @@
                 Добавить новое задание
             </div>
             <div class="card-body">
-                <form action="/item.do" method="post" accept-charset="UTF-8">
+                <form method="post" accept-charset="UTF-8" enctype="text/plain">
                     <div class="form-group">
                         <label for="textarea">Описание задачи</label>
-                        <textarea class="form-control" id="textarea" name="description" rows="3"
-                                  placeholder="Введите задачу">
-                        </textarea>
+                        <textarea class="form-control" id="textarea" name="taskDescription" rows="2"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary" onclick="return validate();">Сохранить</button>
+                    <button type="button" class="btn btn-primary" onclick="return send()">Сохранить</button>
                 </form>
             </div>
         </div>
@@ -54,16 +53,16 @@
 <div class="container pt-3">
     <div class="row">
         <div class="card" style="width: 100%">
-            <div class="card-header">
-                Все задания
+            <div class="card-header text-center ">
+                Задания пользователя
             </div>
-
             <div class="card-body">
-                <table class="table">
+                <table class="table table-striped">
                     <thead>
                     <tr>
-                        <div class="checkbox">
-                            <label><input class="mr-3" type="checkbox" value="">Показать все задачи</label>
+                        <div class="checkbox text-center">
+                            <label><input class="mr-3" type="checkbox" id="checkDone" onclick="print()" value="">Показать
+                                все задачи</label>
                         </div>
                     </tr>
                     <tr>
@@ -73,12 +72,12 @@
                         <th scope="col">Отметка</th>
                     </tr>
                     </thead>
-                    <tbody>
-
-                    </tbody>
+                    <tbody id="tasks"></tbody>
                 </table>
             </div>
         </div>
     </div>
+</div>
+<br><br>
 </body>
 </html>

@@ -1,7 +1,8 @@
 package ru.job4j.todo.model;
 
+import lombok.*;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 /**
  * Class User.
@@ -11,71 +12,21 @@ import java.util.Objects;
  * @since 22.12.2020
  */
 @Entity
+@Data
+@NoArgsConstructor
+@RequiredArgsConstructor
+@EqualsAndHashCode(of = {"name", "email", "password"})
 @Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
+    @NonNull
     private String name;
+    @NonNull
     private String email;
+    @NonNull
     private String password;
-    private String role;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        User user = (User) o;
-        return Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(password,
-                user.password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, email, password);
-    }
+    @NonNull
+    private Integer role;
 }

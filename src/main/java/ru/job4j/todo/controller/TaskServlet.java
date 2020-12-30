@@ -9,7 +9,6 @@ import org.json.simple.parser.ParseException;
 import ru.job4j.todo.model.Role;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
-import ru.job4j.todo.persistence.HbmRole;
 import ru.job4j.todo.persistence.HbmTask;
 import ru.job4j.todo.persistence.HbmUser;
 import ru.job4j.todo.persistence.Store;
@@ -42,7 +41,6 @@ import java.util.stream.Collectors;
 public class TaskServlet extends HttpServlet {
     private static final Store<Task> TASK_STORE = HbmTask.getStore();
     private static final Store<User> USER_STORE = HbmUser.getStore();
-    private static final Store<Role> ROLE_STORE = HbmRole.getStore();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -54,12 +52,12 @@ public class TaskServlet extends HttpServlet {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
         if (user != null) {
-            Role roleUser = ROLE_STORE.findById(user.getRole());
+            Role roleUser = user.getRole();
             if ("admin".equals(roleUser.getName())) {
                 fillJsonArray(jsonArray, user, tasks, roleUser);
             } else {
                 List<Task> userTasks = tasks.stream()
-                        .filter(el -> el.getUserId().equals(user.getId()))
+                        .filter(el -> el.getUser().equals(user))
                         .collect(Collectors.toList());
                 fillJsonArray(jsonArray, user, userTasks, roleUser);
             }
@@ -75,7 +73,7 @@ public class TaskServlet extends HttpServlet {
             jsonObject.addProperty("created", dateFormat(task.getCreated()));
             jsonObject.addProperty("done", task.isDone());
             if ("admin".equals(role.getName())) {
-                jsonObject.addProperty("user", USER_STORE.findById(task.getUserId()).getName());
+                jsonObject.addProperty("user", USER_STORE.findById(task.getUser().getId()).getName());
             } else {
                 jsonObject.addProperty("user", user.getName());
             }
@@ -108,7 +106,7 @@ public class TaskServlet extends HttpServlet {
                     resp.getWriter().println("auth.do");
                 } else {
                     String description = jsonObject.get("description").toString();
-                    TASK_STORE.add(new Task(description, user.getId()));
+                    TASK_STORE.add(new Task(description, user));
                 }
             } else {
                 int id = Integer.parseInt(jsonObject.get("id").toString());

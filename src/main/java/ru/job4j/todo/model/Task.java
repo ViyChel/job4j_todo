@@ -27,5 +27,7 @@ public class Task {
     private Timestamp created = new Timestamp(System.currentTimeMillis());
     private boolean done;
     @NonNull
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

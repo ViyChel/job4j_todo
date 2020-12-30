@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @EqualsAndHashCode(of = {"name", "email", "password"})
 @Table(name = "users")
 public class User {
@@ -28,5 +28,16 @@ public class User {
     @NonNull
     private String password;
     @NonNull
-    private Integer role;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+    public static User of(String name, String email, String password, Role role) {
+        User user = new User();
+        user.name = name;
+        user.email = email;
+        user.password = password;
+        user.role = role;
+        return user;
+    }
 }

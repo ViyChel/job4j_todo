@@ -48,10 +48,8 @@ public class RegServlet extends HttpServlet {
                 req.setAttribute("error", "Пользователь с таким email уже существует!");
                 doGet(req, resp);
             } else {
-                user.setName(name);
-                user.setEmail(email);
-                user.setPassword(password);
-                user.setRole(ROLE_STORE.findByName("user").get(0).getId());
+                Role role = ROLE_STORE.findByName("user").get(0);
+                user = User.of(name, email, password, role);
                 USER_STORE.add(user);
                 sc.setAttribute("user", user);
                 resp.sendRedirect(req.getContextPath());

@@ -17,7 +17,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 @EqualsAndHashCode
 @Table(name = "roles")
 public class Role {
@@ -25,4 +25,10 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+
+    public static Role of(String name) {
+        Role role = new Role();
+        role.name = name;
+        return role;
+    }
 }

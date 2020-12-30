@@ -1,11 +1,8 @@
 package ru.job4j.todo.persistence;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import ru.job4j.todo.model.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +15,6 @@ import java.util.List;
 @Slf4j
 public class HbmTask implements Store<Task> {
     private static final HbmTask STORE = new HbmTask();
-    private final SessionFactory sf = ConnectorDB.getInstance();
 
     public static HbmTask getStore() {
         return STORE;
@@ -26,94 +22,42 @@ public class HbmTask implements Store<Task> {
 
     @Override
     public Task add(Task model) {
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            session.save(model);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            sf.getCurrentSession().getTransaction().rollback();
-            log.error(e.getMessage(), e);
-        }
+        this.tx(session -> session.save(model));
         return model;
     }
 
     @Override
     public boolean replace(int id, Task model) {
-        boolean result = false;
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            model.setId(id);
-            session.update(model);
-            session.getTransaction().commit();
-            result = true;
-        } catch (Exception e) {
-            sf.getCurrentSession().getTransaction().rollback();
-            log.error(e.getMessage(), e);
-        }
-        return result;
+        return this.tx(session -> {
+            session.update(String.valueOf(id), model);
+            return true;
+        });
     }
 
     @Override
     public boolean delete(int id) {
-        boolean result = false;
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
+        return this.tx(session -> {
             Task model = new Task();
             model.setId(id);
             session.delete(model);
-            session.getTransaction().commit();
-            result = true;
-        } catch (Exception e) {
-            sf.getCurrentSession().getTransaction().rollback();
-            log.error(e.getMessage(), e);
-        }
-        return result;
+            return true;
+        });
     }
 
     @Override
     public List<Task> findAll() {
-        List result = new ArrayList<>();
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            result = session.createQuery("from ru.job4j.todo.model.Task").list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            sf.getCurrentSession().getTransaction().rollback();
-            log.error(e.getMessage(), e);
-        }
-        return result;
+        return this.tx(session -> session.createQuery("from Task").list());
     }
 
     @Override
     public List<Task> findByName(String name) {
-        List result = new ArrayList<>();
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            result = session.createQuery(
-                    "FROM ru.job4j.todo.model.Task WHERE description = :description"
-            ).setParameter("description", name).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            sf.getCurrentSession().getTransaction().rollback();
-            log.error(e.getMessage(), e);
-        }
-        return result;
+        return this.tx(session -> session.createQuery("from Task where description = :description")
+                .setParameter("description", name).list()
+        );
     }
 
     @Override
     public Task findById(int id) {
-        Task result = new Task();
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            Task item = session.get(Task.class, id);
-            if (item != null) {
-                result = item;
-            }
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            sf.getCurrentSession().getTransaction().rollback();
-            log.error(e.getMessage(), e);
-        }
-        return result;
+        return this.tx(session -> session.get(Task.class, id));
     }
 }

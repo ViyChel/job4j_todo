@@ -102,7 +102,6 @@ $(document).ready(function () {
     $.ajax({
         type: 'GET',
         url: 'http://localhost:8080/todo/user.do',
-        // dataType: 'JSON'
     }).done(function (name) {
         console.log(name)
         if (name === '') {

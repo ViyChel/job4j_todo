@@ -40,9 +40,15 @@
             </div>
             <div class="card-body">
                 <form method="post" accept-charset="UTF-8" enctype="text/plain">
-                    <div class="form-group">
-                        <label for="textarea">Описание задачи</label>
-                        <textarea class="form-control" id="textarea" name="taskDescription" rows="2"></textarea>
+                    <div class="row">
+                        <div class="form-group col-sm-8">
+                            <label for="textarea">Описание задачи</label>
+                            <textarea class="form-control" id="textarea" name="taskDescription" rows="2"></textarea>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="categories">Категория</label>
+                            <select class="form-control" name="categories" id="categories" multiple></select>
+                        </div>
                     </div>
                     <button type="button" class="btn btn-primary" onclick="return send()">Сохранить</button>
                 </form>
@@ -67,6 +73,7 @@
                     </tr>
                     <tr>
                         <th scope="col">Описание</th>
+                        <th scope="col">Категория</th>
                         <th scope="col">Дата создания</th>
                         <th scope="col">Пользователь</th>
                         <th scope="col">Отметка</th>

@@ -1,6 +1,7 @@
 package ru.job4j.todo.persistence;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
 
 import java.util.List;
@@ -26,6 +27,19 @@ public class HbmTask implements Store<Task> {
         return model;
     }
 
+
+    public Task add(Task task, String[] ids) {
+        this.tx(session -> {
+            for (String id : ids) {
+                Category category = session.find(Category.class, Integer.parseInt(id));
+                task.addCategory(category);
+            }
+            session.persist(task);
+            return true;
+        });
+        return task;
+    }
+
     @Override
     public boolean replace(int id, Task model) {
         return this.tx(session -> {
@@ -37,21 +51,21 @@ public class HbmTask implements Store<Task> {
     @Override
     public boolean delete(int id) {
         return this.tx(session -> {
-            Task model = new Task();
-            model.setId(id);
-            session.delete(model);
+            Task model = session.get(Task.class, id);
+            session.remove(model);
             return true;
         });
     }
 
     @Override
     public List<Task> findAll() {
-        return this.tx(session -> session.createQuery("from Task").list());
+        return this.tx(session -> session.createQuery("select distinct c from Task c join fetch c.categories",
+                Task.class).list());
     }
 
     @Override
     public List<Task> findByName(String name) {
-        return this.tx(session -> session.createQuery("from Task where description = :description")
+        return this.tx(session -> session.createQuery("from Task where description = :description", Task.class)
                 .setParameter("description", name).list()
         );
     }
@@ -59,5 +73,9 @@ public class HbmTask implements Store<Task> {
     @Override
     public Task findById(int id) {
         return this.tx(session -> session.get(Task.class, id));
+    }
+
+    public static void main(String[] args) {
+        STORE.delete(141);
     }
 }

@@ -1,11 +1,13 @@
 package ru.job4j.todo.controller;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Role;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
@@ -70,6 +72,9 @@ public class TaskServlet extends HttpServlet {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("id", task.getId());
             jsonObject.addProperty("description", task.getDescription());
+            List<Category> list = task.getCategories();
+            String categories = list.stream().map(Category::getName).collect(Collectors.joining(" ,"));
+            jsonObject.addProperty("categories", categories);
             jsonObject.addProperty("created", dateFormat(task.getCreated()));
             jsonObject.addProperty("done", task.isDone());
             if ("admin".equals(role.getName())) {
@@ -106,7 +111,8 @@ public class TaskServlet extends HttpServlet {
                     resp.getWriter().println("auth.do");
                 } else {
                     String description = jsonObject.get("description").toString();
-                    TASK_STORE.add(new Task(description, user));
+                    String[] categoryId = new Gson().fromJson(jsonObject.get("category").toString(), String[].class);
+                    HbmTask.getStore().add(new Task(description, user), categoryId);
                 }
             } else {
                 int id = Integer.parseInt(jsonObject.get("id").toString());

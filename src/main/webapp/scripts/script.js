@@ -44,6 +44,7 @@ function printTasks(state) {
             for (let i = 0; i < data.length; i++) {
                 let id = data[i].id;
                 let description = data[i].description;
+                let categories = data[i].categories;
                 let created = data[i].created;
                 let checked = '';
                 if (state === true) {
@@ -60,6 +61,7 @@ function printTasks(state) {
 
                 function printRow() {
                     text += '<tr><td>' + description + '</td>';
+                    text += '<td>' + categories + '</td>';
                     text += '<td>' + created + '</td>';
                     text += '<td>' + data[i].user + '</td>';
                     text += '<td><input class="ml-4" type="checkbox" id="' + id + '" value="" ' + checked + ' onclick="isDone(' + id + ')"></td></tr>';
@@ -84,12 +86,18 @@ function send() {
 
 function sendTask(fn) {
     let description = $('#textarea').val();
-    if (validate(description)) {
+    let category = $('#categories').val();
+    let task = {
+        description: description,
+        category: category
+    }
+    if (validate(description, category)) {
+        console.log('!!!')
         $.ajax({
             type: 'POST',
             url: 'http://localhost:8080/todo/task.do',
             contentType: 'JSON',
-            data: JSON.stringify({description: description})
+            data: JSON.stringify(task)
         }).done(function (data) {
             fn(data);
         }).fail(function () {
@@ -103,7 +111,6 @@ $(document).ready(function () {
         type: 'GET',
         url: 'http://localhost:8080/todo/user.do',
     }).done(function (name) {
-        console.log(name)
         if (name === '') {
             $('#auth').append().html('<a class="nav-link" href="/todo/auth.do">Войти</a>')
         } else {
@@ -114,9 +121,35 @@ $(document).ready(function () {
     })
 })
 
-function validate(param) {
-    if (param === '') {
+$(document).ready(function printCategories() {
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:8080/todo/categories.do',
+        dataType: 'JSON'
+    }).done(function (data) {
+        if (data !== null) {
+            let textRow = $('#categories').html('');
+            let text = '';
+            for (let i = 0; i < data.length; i++) {
+                let id = data[i].id;
+                let name = data[i].name;
+                text += '<option value="' + id + '">' + name + '</option>';
+            }
+            textRow.append(text);
+        }
+    }).fail(function () {
+        alert('An error occurred!');
+    })
+})
+
+
+function validate(desc, category) {
+    if (desc === '') {
         alert("Опишите задачу");
         return false;
-    } else return true
+    } else if (category.length === 0) {
+        alert("Выберите категорию");
+        return false;
+    }
+    return true;
 }

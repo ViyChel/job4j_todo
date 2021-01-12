@@ -25,9 +25,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,9 +87,11 @@ public class TaskServlet extends HttpServlet {
         });
     }
 
-    private String dateFormat(Timestamp timestamp) {
+    private String dateFormat(Date date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime localDate = timestamp.toLocalDateTime();
+        LocalDateTime localDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         return localDate.format(formatter);
     }
 

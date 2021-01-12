@@ -74,8 +74,4 @@ public class HbmTask implements Store<Task> {
     public Task findById(int id) {
         return this.tx(session -> session.get(Task.class, id));
     }
-
-    public static void main(String[] args) {
-        STORE.delete(141);
-    }
 }

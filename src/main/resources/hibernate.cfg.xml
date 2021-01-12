@@ -20,15 +20,7 @@
         <mapping class="ru.job4j.todo.model.Task"/>
         <mapping class="ru.job4j.todo.model.User"/>
         <mapping class="ru.job4j.todo.model.Role"/>
-<!--        <mapping class="ru.job4j.todo.model.onetomany.Brand"/>-->
-<!--        <mapping class="ru.job4j.todo.model.onetomany.Model"/>-->
-        <mapping class="ru.job4j.todo.model.lazy.Model"/>
-        <mapping class="ru.job4j.todo.model.lazy.Brand"/>
         <mapping class="ru.job4j.todo.model.Category"/>
-        <mapping class="ru.job4j.todo.model.City"/>
-        <mapping class="ru.job4j.todo.model.Human"/>
-
-
 
     </session-factory>
 </hibernate-configuration>
